@@ -269,8 +269,18 @@ out:
 	return err;
 }
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6, 17, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0)
+static int ntfs_read_iomap_begin_non_resident(struct inode *inode, loff_t offset,
+		loff_t length, unsigned int flags, struct iomap *iomap, bool for_clu_zero)
+#else
 static int ntfs_read_iomap_begin_non_resident(struct inode *inode, loff_t offset,
 		loff_t length, unsigned int flags, struct iomap *iomap)
+#endif
+#else
+static int ntfs_read_iomap_begin_non_resident(struct inode *inode, loff_t offset,
+		loff_t length, unsigned int flags, struct iomap *iomap)
+#endif
 {
 	struct ntfs_inode *ni = NTFS_I(inode);
 	s64 vcn;
@@ -409,11 +419,6 @@ static int ntfs_read_iomap_end(struct inode *inode, loff_t pos, loff_t length,
 	return written;
 }
 
-const struct iomap_ops ntfs_read_iomap_ops = {
-	.iomap_begin = ntfs_read_iomap_begin,
-	.iomap_end = ntfs_read_iomap_end,
-};
-
 static int ntfs_zero_read_iomap_end(struct inode *inode, loff_t pos, loff_t length,
 		ssize_t written, unsigned int flags, struct iomap *iomap)
 {
@@ -447,6 +452,11 @@ const struct iomap_ops ntfs_zero_read_iomap_ops = {
 };
 #endif
 #endif
+
+const struct iomap_ops ntfs_read_iomap_ops = {
+	.iomap_begin = ntfs_read_iomap_begin,
+	.iomap_end = ntfs_read_iomap_end,
+};
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 1, 0)
 static int ntfs_buffered_zeroed_clusters(struct inode *vi, s64 vcn)

@@ -853,7 +853,11 @@ lock_retry_remap:
 		if (page) {
 			ntfs_error(vol->sb,
 				"Still have pages left! Terminating them with extreme prejudice.  Inode 0x%lx, page index 0x%lx.",
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 16, 0)
 				ni->mft_no, page->__folio_index);
+#else
+				ni->mft_no, page->index);
+#endif
 			flush_dcache_page(page);
 			kunmap_local(page_address(page));
 			unlock_page(page);
