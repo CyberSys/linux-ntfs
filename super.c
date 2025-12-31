@@ -3323,7 +3323,7 @@ static int __init init_ntfs_fs(void)
 			sizeof(struct ntfs_inode), 0, SLAB_RECLAIM_ACCOUNT, NULL);
 #else
 	ntfs_inode_cache = kmem_cache_create(ntfs_inode_cache_name,
-			sizeof(ntfs_inode), 0,
+			sizeof(struct ntfs_inode), 0,
 			SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD, NULL);
 #endif
 	if (!ntfs_inode_cache) {
@@ -3338,7 +3338,7 @@ static int __init init_ntfs_fs(void)
 			ntfs_big_inode_init_once);
 #else
 	ntfs_big_inode_cache = kmem_cache_create(ntfs_big_inode_cache_name,
-			sizeof(big_ntfs_inode), 0,
+			sizeof(struct big_ntfs_inode), 0,
 			SLAB_HWCACHE_ALIGN|SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD|
 			SLAB_ACCOUNT, ntfs_big_inode_init_once);
 #endif

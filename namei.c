@@ -497,7 +497,12 @@ static struct ntfs_inode *__ntfs_create(struct user_namespace *mnt_userns, struc
 	inode_set_mtime_to_ts(dir, ni->i_crtime);
 	inode_set_ctime_to_ts(dir, ni->i_crtime);
 #else
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
+	inode_set_ctime_to_ts(dir, ni->i_crtime);
+	dir->i_mtime = ni->i_crtime;
+#else
 	dir->i_mtime = dir->i_ctime = ni->i_crtime;
+#endif
 #endif
 	mark_inode_dirty(dir);
 

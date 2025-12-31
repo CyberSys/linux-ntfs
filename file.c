@@ -1235,12 +1235,27 @@ out:
 			loff_t len = min_t(loff_t,
 					   round_up(old_size, PAGE_SIZE) - old_size,
 					   offset - old_size);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
 			err = iomap_zero_range(vi, old_size, len, NULL,
 					       &ntfs_read_iomap_ops,
 					       &ntfs_iomap_folio_ops, NULL);
+#else
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
+			err = iomap_zero_range(vi, old_size, len, NULL,
+					       &ntfs_read_iomap_ops, NULL);
+#else
+			err = iomap_zero_range(vi, old_size, len, NULL,
+					       &ntfs_read_iomap_ops);
+#endif
+#endif
 		}
 		NInoSetFileNameDirty(ni);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
 		inode_set_mtime_to_ts(vi, inode_set_ctime_current(vi));
+#else
+		vi->i_mtime = current_time(vi);
+		vi->i_ctime = current_time(vi);
+#endif
 		mark_inode_dirty(vi);
 	}
 
@@ -1253,14 +1268,24 @@ const struct file_operations ntfs_file_ops = {
 	.read_iter	= ntfs_file_read_iter,
 	.write_iter	= ntfs_file_write_iter,
 	.fsync		= ntfs_file_fsync,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
 	.mmap_prepare	= ntfs_file_mmap_prepare,
+#else
+	.mmap		= ntfs_file_mmap,
+#endif
 	.open		= ntfs_file_open,
 	.release	= ntfs_file_release,
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0)
 	.splice_read	= ntfs_file_splice_read,
+#else
+	.splice_read	= generic_file_splice_read,
+#endif
 	.splice_write	= iter_file_splice_write,
+#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 16, 0)
 	.unlocked_ioctl	= ntfs_ioctl,
 #ifdef CONFIG_COMPAT
 	.compat_ioctl	= ntfs_compat_ioctl,
+#endif
 #endif
 	.fallocate	= ntfs_fallocate,
 };
