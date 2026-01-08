@@ -39,22 +39,21 @@ static s64 ntfs_convert_page_index_into_lcn(struct ntfs_volume *vol, struct ntfs
 }
 
 /**
- * ntfs_read_folio - fill a @folio of a @file with data from the device
+ * ntfs_read_folio - Read data for a folio from the device
  * @file:	open file to which the folio @folio belongs or NULL
  * @folio:	page cache folio to fill with data
  *
- * For non-resident attributes, ntfs_read_folio() fills the @folio of the open
- * file @file by calling the ntfs version of the generic block_read_full_folio()
- * function, which in turn creates and reads in the buffers associated with
- * the folio asynchronously.
+ * This function handles reading data into the page cache. It first checks
+ * for specific ntfs attribute type like encryption and compression.
  *
- * For resident attributes, OTOH, ntfs_read_folio() fills @folio by copying the
- * data from the mft record (which at this stage is most likely in memory) and
- * fills the remainder with zeroes. Thus, in this case, I/O is synchronous, as
- * even if the mft record is not cached at this point in time, we need to wait
- * for it to be read in before we can do the copy.
+ * - If the attribute is encrypted, access is denied (-EACCES) because
+ *   decryption is not supported in this path.
+ * - If the attribute is non-resident and compressed, the read operation is
+ *   delegated to ntfs_read_compressed_block().
+ * - For normal resident or non-resident attribute, it utilizes the generic
+ *   iomap infrastructure via iomap_bio_read_folio() to perform the I/O.
  *
- * Return 0 on success and -errno on error.
+ * Return: 0 on success, or -errno on error.
  */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 19, 0)
 static int ntfs_read_folio(struct file *file, struct folio *folio)
