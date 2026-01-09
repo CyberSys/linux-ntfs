@@ -509,7 +509,8 @@ remap_rl:
 	rl = __ntfs_attr_find_vcn_nolock(&ni->runlist, vcn);
 	if (IS_ERR(rl)) {
 		up_write(&ni->runlist.lock);
-		return false;
+		mutex_unlock(&ni->mrec_lock);
+		return -EIO;
 	}
 	lcn = ntfs_rl_vcn_to_lcn(rl, vcn);
 
