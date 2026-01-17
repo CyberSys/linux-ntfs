@@ -560,7 +560,7 @@ static ssize_t ntfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
 
 		file_accessed(iocb->ki_filp);
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0)
-		ret = iomap_dio_rw(iocb, to, &ntfs_read_iomap_ops, NULL, IOMAP_DIO_PARTIAL,
+		ret = iomap_dio_rw(iocb, to, &ntfs_read_iomap_ops, NULL, 0,
 				NULL, 0);
 #else
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 5, 0)
