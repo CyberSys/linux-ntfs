@@ -615,7 +615,6 @@ int ntfs_sync_mft_mirror(struct ntfs_volume *vol, const unsigned long mft_no,
 	submit_bio(bio);
 	/* Current state: all buffers are clean, unlocked, and uptodate. */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-	flush_dcache_folio(folio);
 	folio_mark_uptodate(folio);
 
 unlock_folio:
@@ -624,7 +623,6 @@ unlock_folio:
 	folio_put(folio);
 #else
 	/* Current state: all buffers are clean, unlocked, and uptodate. */
-	flush_dcache_page(page);
 	SetPageUptodate(page);
 unlock_page:
 	unlock_page(page);
@@ -717,8 +715,6 @@ int write_mft_record_nolock(struct ntfs_inode *ni, struct mft_record *m, int syn
 			vol->cluster_size_mask;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-		flush_dcache_folio(folio);
-
 		bio = bio_alloc(vol->sb->s_bdev, 1, REQ_OP_WRITE, GFP_NOIO);
 		bio->bi_iter.bi_sector =
 			NTFS_B_TO_SECTOR(vol, NTFS_CLU_TO_B(vol, ni->mft_lcn[i]) +
@@ -730,8 +726,6 @@ int write_mft_record_nolock(struct ntfs_inode *ni, struct mft_record *m, int syn
 			goto put_bio_out;
 		}
 #else
-		flush_dcache_page(page);
-
 		bio = bio_alloc(vol->sb->s_bdev, 1, REQ_OP_WRITE, GFP_NOIO);
 		bio->bi_iter.bi_sector =
 			NTFS_B_TO_SECTOR(vol, NTFS_CLU_TO_B(vol, ni->mft_lcn[i]) +
@@ -1240,13 +1234,11 @@ static int ntfs_mft_bitmap_find_and_alloc_free_rec_nolock(struct ntfs_volume *vo
 					}
 					*byte |= 1 << b;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-					flush_dcache_folio(folio);
 					folio_mark_dirty(folio);
 					folio_unlock(folio);
 					kunmap_local(buf);
 					folio_put(folio);
 #else
-					flush_dcache_page(page);
 					set_page_dirty(page);
 					unlock_page(page);
 					kunmap(page);
@@ -1429,13 +1421,11 @@ static int ntfs_mft_bitmap_extend_allocation_nolock(struct ntfs_volume *vol)
 		/* Next cluster is free, allocate it. */
 		*b |= tb;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-		flush_dcache_folio(folio);
 		folio_mark_dirty(folio);
 		folio_unlock(folio);
 		kunmap_local(b);
 		folio_put(folio);
 #else
-		flush_dcache_page(page);
 		set_page_dirty(page);
 		unlock_page(page);
 		kunmap(page);
@@ -2252,7 +2242,6 @@ static int ntfs_mft_record_format(const struct ntfs_volume *vol, const s64 mft_n
 	}
 	pre_write_mst_fixup((struct ntfs_record *)m, vol->mft_record_size);
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-	flush_dcache_folio(folio);
 	folio_mark_uptodate(folio);
 	/*
 	 * Make sure the mft record is written out to disk.  We could use
@@ -2264,7 +2253,6 @@ static int ntfs_mft_record_format(const struct ntfs_volume *vol, const s64 mft_n
 	kunmap_local(m);
 	folio_put(folio);
 #else
-	flush_dcache_page(page);
 	SetPageUptodate(page);
 	/*
 	 * Make sure the mft record is written out to disk.  We could use
@@ -2749,10 +2737,8 @@ mft_rec_already_initialized:
 	if (S_ISDIR(mode))
 		m->flags |= MFT_RECORD_IS_DIRECTORY;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-	flush_dcache_folio(folio);
 	folio_mark_uptodate(folio);
 #else
-	flush_dcache_page(page);
 	SetPageUptodate(page);
 #endif
 	if (base_ni) {
@@ -2781,14 +2767,12 @@ mft_rec_already_initialized:
 			m->flags &= cpu_to_le16(
 					~le16_to_cpu(MFT_RECORD_IN_USE));
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-			flush_dcache_folio(folio);
 			/* Make sure the mft record is written out to disk. */
 			mark_ntfs_record_dirty(folio);
 			folio_unlock(folio);
 			kunmap_local(m);
 			folio_put(folio);
 #else
-			flush_dcache_page(page);
 			/* Make sure the mft record is written out to disk. */
 			mark_ntfs_record_dirty(page);
 			unlock_page(page);
