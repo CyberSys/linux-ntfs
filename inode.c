@@ -2517,7 +2517,7 @@ int ntfs_extend_initialized_size(struct inode *vi, const loff_t offset,
 				       &ntfs_iomap_folio_ops, NULL);
 #else
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 15, 0)
-                :cn
+                err = iomap_zero_range(vi, old_init_size,
 				       offset - old_init_size,
 				       NULL, &ntfs_seek_iomap_ops, NULL);
 #else
