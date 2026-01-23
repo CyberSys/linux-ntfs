@@ -266,7 +266,7 @@ out:
 	return err;
 }
 
-/**
+/*
  * ntfs_read_iomap_begin_non_resident - map non-resident NTFS file data
  * @inode:		inode to map
  * @offset:		file offset to map

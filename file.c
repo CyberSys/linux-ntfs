@@ -29,7 +29,7 @@
 #include "bitmap.h"
 #include "uapi_ntfs.h"
 
-/**
+/*
  * ntfs_file_open - called when an inode is about to be opened
  * @vi:		inode to be opened
  * @filp:	file structure describing the inode
@@ -128,7 +128,7 @@ static int ntfs_file_release(struct inode *vi, struct file *filp)
 	return 0;
 }
 
-/**
+/*
  * ntfs_file_fsync - sync a file to disk
  * @filp:	file to be synced
  * @start:	start offset to be synced

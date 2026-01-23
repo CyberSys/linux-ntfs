@@ -79,7 +79,7 @@ err_out:
 	return -EIO;
 }
 
-/**
+/*
  * map_mft_record_folio - map the folio in which a specific mft record resides
  * @ni:		ntfs inode whose mft record page to map
  *
@@ -216,7 +216,7 @@ err_out:
 #endif
 }
 
-/**
+/*
  * map_mft_record - map and pin an mft record
  * @ni:		ntfs inode whose MFT record to map
  *
@@ -265,7 +265,7 @@ struct mft_record *map_mft_record(struct ntfs_inode *ni)
 	return m;
 }
 
-/**
+/*
  * unmap_mft_record - release a reference to a mapped mft record
  * @ni:		ntfs inode whose MFT record to unmap
  *
@@ -308,7 +308,7 @@ void unmap_mft_record(struct ntfs_inode *ni)
 #endif
 }
 
-/**
+/*
  * map_extent_mft_record - load an extent inode and attach it to its base
  * @base_ni:	base ntfs inode
  * @mref:	mft reference of the extent inode to load
@@ -455,7 +455,7 @@ unm_nolock_err_out:
 	return m;
 }
 
-/**
+/*
  * __mark_mft_record_dirty - mark the base vfs inode dirty
  * @ni:		ntfs inode describing the mapped mft record
  *
@@ -490,7 +490,7 @@ void __mark_mft_record_dirty(struct ntfs_inode *ni)
 	__mark_inode_dirty(VFS_I(base_ni), I_DIRTY_DATASYNC);
 }
 
-/**
+/*
  * ntfs_sync_mft_mirror - synchronize an mft record to the mft mirror
  * @vol:	ntfs volume on which the mft record to synchronize resides
  * @mft_no:	mft record number of mft record to synchronize
@@ -643,7 +643,7 @@ err_out:
 	return err;
 }
 
-/**
+/*
  * write_mft_record_nolock - write out a mapped (extent) mft record
  * @ni:		ntfs inode describing the mapped (extent) mft record
  * @m:		mapped (extent) mft record to write
@@ -833,7 +833,7 @@ static int ntfs_test_inode_wb(struct inode *vi, unsigned long ino, void *data)
 	return igrab(vi) ? 1 : -1;
 }
 
-/**
+/*
  * ntfs_may_write_mft_record - check if an mft record may be written out
  * @vol:	[IN]  ntfs volume on which the mft record to check resides
  * @mft_no:	[IN]  mft record number of the mft record to check
@@ -1078,7 +1078,7 @@ static const char *es = "  Leaving inconsistent metadata.  Unmount and run chkds
 
 #define RESERVED_MFT_RECORDS	64
 
-/**
+/*
  * ntfs_mft_bitmap_find_and_alloc_free_rec_nolock - see name
  * @vol:	volume on which to search for a free mft record
  * @base_ni:	open base inode if allocating an extent mft record or NULL
@@ -1316,7 +1316,7 @@ out:
 	return ret;
 }
 
-/**
+/*
  * ntfs_mft_bitmap_extend_allocation_nolock - extend mft bitmap by a cluster
  * @vol:	volume on which to extend the mft bitmap attribute
  *
@@ -1649,7 +1649,7 @@ undo_alloc:
 	return ret;
 }
 
-/**
+/*
  * ntfs_mft_bitmap_extend_initialized_nolock - extend mftbmp initialized data
  * @vol:	volume on which to extend the mft bitmap attribute
  *
@@ -1777,7 +1777,7 @@ err_out:
 	return ret;
 }
 
-/**
+/*
  * ntfs_mft_data_extend_allocation_nolock - extend mft data attribute
  * @vol:	volume on which to extend the mft data attribute
  *
@@ -2080,7 +2080,7 @@ undo_alloc:
 	return ret;
 }
 
-/**
+/*
  * ntfs_mft_record_layout - layout an mft record into a memory buffer
  * @vol:	volume to which the mft record will belong
  * @mft_no:	mft reference specifying the mft record number
@@ -2156,7 +2156,7 @@ static int ntfs_mft_record_layout(const struct ntfs_volume *vol, const s64 mft_n
 	return 0;
 }
 
-/**
+/*
  * ntfs_mft_record_format - format an mft record on an ntfs volume
  * @vol:	volume on which to format the mft record
  * @mft_no:	mft record number to format
@@ -2268,7 +2268,7 @@ static int ntfs_mft_record_format(const struct ntfs_volume *vol, const s64 mft_n
 	return 0;
 }
 
-/**
+/*
  * ntfs_mft_record_alloc - allocate an mft record on an ntfs volume
  * @vol:	[IN]  volume on which to allocate the mft record
  * @mode:	[IN]  mode if want a file or directory, i.e. base inode or 0
@@ -2902,7 +2902,7 @@ max_err_out:
 	return -ENOSPC;
 }
 
-/**
+/*
  * ntfs_mft_record_free - free an mft record on an ntfs volume
  * @vol:	volume on which to free the mft record
  * @ni:		open ntfs inode of the mft record to free

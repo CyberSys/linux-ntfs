@@ -326,7 +326,7 @@ void ntfs_handle_error(struct super_block *sb)
 	}
 }
 
-/**
+/*
  * ntfs_write_volume_flags - write new flags to the volume information flags
  * @vol:	ntfs volume on which to modify the flags
  * @flags:	new flags value for the volume information flags
@@ -382,7 +382,7 @@ put_unm_err_out:
 	return err;
 }
 
-/**
+/*
  * ntfs_set_volume_flags - set bits in the volume information flags
  * @vol:	ntfs volume on which to modify the flags
  * @flags:	flags to set on the volume
@@ -397,7 +397,7 @@ int ntfs_set_volume_flags(struct ntfs_volume *vol, __le16 flags)
 	return ntfs_write_volume_flags(vol, vol->vol_flags | flags);
 }
 
-/**
+/*
  * ntfs_clear_volume_flags - clear bits in the volume information flags
  * @vol:	ntfs volume on which to modify the flags
  * @flags:	flags to clear on the volume
@@ -464,7 +464,7 @@ out:
 	return ret;
 }
 
-/**
+/*
  * is_boot_sector_ntfs - check whether a boot sector is a valid NTFS boot sector
  * @sb:		Super block of the device to which @b belongs.
  * @b:		Boot sector of device @sb to check.
@@ -547,7 +547,7 @@ not_ntfs:
 	return false;
 }
 
-/**
+/*
  * read_ntfs_boot_sector - read the NTFS boot sector of a device
  * @sb:		super block of device to read the boot sector from
  * @silent:	if true, suppress all output
@@ -581,7 +581,7 @@ static char *read_ntfs_boot_sector(struct super_block *sb,
 	return boot_sector;
 }
 
-/**
+/*
  * parse_ntfs_boot_sector - parse the boot sector and store the data in @vol
  * @vol:	volume structure to initialise with data from boot sector
  * @b:		boot sector to parse
@@ -764,7 +764,7 @@ static bool parse_ntfs_boot_sector(struct ntfs_volume *vol,
 	return true;
 }
 
-/**
+/*
  * ntfs_setup_allocators - initialize the cluster and mft allocators
  * @vol:	volume structure for which to setup the allocators
  *
@@ -840,7 +840,7 @@ static void ntfs_setup_allocators(struct ntfs_volume *vol)
 
 static struct lock_class_key mftmirr_runlist_lock_key,
 			     mftmirr_mrec_lock_key;
-/**
+/*
  * load_and_init_mft_mirror - load and setup the mft mirror inode for a volume
  * @vol:	ntfs super block describing device whose mft mirror to load
  *
@@ -893,7 +893,7 @@ static bool load_and_init_mft_mirror(struct ntfs_volume *vol)
 	return true;
 }
 
-/**
+/*
  * check_mft_mirror - compare contents of the mft mirror with the mft
  * @vol:	ntfs super block describing device whose mft mirror to check
  *
@@ -1072,7 +1072,7 @@ mft_unmap_out:
 	return true;
 }
 
-/**
+/*
  * load_and_check_logfile - load and check the logfile inode for a volume
  * @vol: ntfs volume to load the logfile for
  * @rp: on success, set to the restart page header
@@ -1103,7 +1103,7 @@ static int load_and_check_logfile(struct ntfs_volume *vol,
 
 #define NTFS_HIBERFIL_HEADER_SIZE	4096
 
-/**
+/*
  * check_windows_hibernation_status - check if Windows is suspended on a volume
  * @vol:	ntfs super block of device to check
  *
@@ -1228,7 +1228,7 @@ iput_out:
 	return ret;
 }
 
-/**
+/*
  * load_and_init_quota - load and setup the quota file for a volume if present
  * @vol:	ntfs super block describing device whose quota file to load
  *
@@ -1295,7 +1295,7 @@ static bool load_and_init_quota(struct ntfs_volume *vol)
 	return true;
 }
 
-/**
+/*
  * load_and_init_attrdef - load the attribute definitions table for a volume
  * @vol:	ntfs super block describing device whose attrdef to load
  *
@@ -1375,7 +1375,7 @@ failed:
 	return false;
 }
 
-/**
+/*
  * load_and_init_upcase - load the upcase table for an ntfs volume
  * @vol:	ntfs super block describing device whose upcase to load
  *
@@ -1500,7 +1500,7 @@ static struct lock_class_key
 	lcnbmp_runlist_lock_key, lcnbmp_mrec_lock_key,
 	mftbmp_runlist_lock_key, mftbmp_mrec_lock_key;
 
-/**
+/*
  * load_system_files - open the system files using normal functions
  * @vol:	ntfs super block describing device whose system files to load
  *
@@ -1835,7 +1835,7 @@ static void ntfs_volume_free(struct ntfs_volume *vol)
 	kfree(vol);
 }
 
-/**
+/*
  * ntfs_put_super - called by the vfs to unmount a volume
  * @sb:		vfs superblock of volume to unmount
  */
@@ -2020,7 +2020,7 @@ static int ntfs_sync_fs(struct super_block *sb, int wait)
 	return err;
 }
 
-/**
+/*
  * get_nr_free_clusters - return the number of free clusters on a volume
  * @vol:	ntfs volume for which to obtain free cluster count
  *
@@ -2191,7 +2191,7 @@ s64 ntfs_available_clusters_count(struct ntfs_volume *vol, s64 nr_clusters)
 	return nr_clusters;
 }
 
-/**
+/*
  * __get_nr_free_mft_records - return the number of free inodes on a volume
  * @vol:	ntfs volume for which to obtain free inode count
  * @nr_free:	number of mft records in filesystem
@@ -2313,7 +2313,7 @@ static unsigned long __get_nr_free_mft_records(struct ntfs_volume *vol,
 	return nr_free;
 }
 
-/**
+/*
  * ntfs_statfs - return information about mounted NTFS volume
  * @dentry:	dentry from mounted volume
  * @sfs:	statfs structure in which to return the information
@@ -2428,7 +2428,7 @@ static void precalc_free_clusters(struct work_struct *work)
 
 static struct lock_class_key ntfs_mft_inval_lock_key;
 
-/**
+/*
  * ntfs_fill_super - mount an ntfs filesystem
  * @sb: super block of the device to mount
  * @fc: filesystem context containing mount options
@@ -2443,7 +2443,6 @@ static struct lock_class_key ntfs_mft_inval_lock_key;
  * expectedly return an error, but nobody wants to see error messages when in
  * fact this is what is supposed to happen.
  */
-
 static int ntfs_fill_super(struct super_block *sb, struct fs_context *fc)
 {
 	char *boot;

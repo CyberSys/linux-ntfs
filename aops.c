@@ -33,7 +33,7 @@ static s64 lcn_from_index(struct ntfs_volume *vol, struct ntfs_inode *ni,
 	return lcn;
 }
 
-/**
+/*
  * ntfs_read_folio - Read data for a folio from the device
  * @file:	open file to which the folio @folio belongs or NULL
  * @folio:	page cache folio to fill with data
@@ -539,7 +539,7 @@ unm_done:
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 0, 0)
-/**
+/*
  * ntfs_writepage - write a @page to the backing store
  * @page:	page cache page to write out
  * @wbc:	writeback control structure
@@ -623,7 +623,7 @@ static int ntfs_writepage(struct page *page, struct writeback_control *wbc)
 }
 #endif
 
-/**
+/*
  * ntfs_bmap - map logical file block to physical device block
  * @mapping:	address space mapping to which the block to be mapped belongs
  * @block:	logical block to map to its physical device block
