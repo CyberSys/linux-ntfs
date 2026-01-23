@@ -230,7 +230,6 @@ int __ntfs_bitmap_set_bits_in_run(struct inode *vi, const s64 start_bit,
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
 		/* Update @index and get the next folio. */
-		flush_dcache_folio(folio);
 		folio_mark_dirty(folio);
 		folio_unlock(folio);
 		kunmap_local(kaddr);
@@ -247,7 +246,6 @@ int __ntfs_bitmap_set_bits_in_run(struct inode *vi, const s64 start_bit,
 		kaddr = kmap_local_folio(folio, 0);
 #else
 		/* Update @index and get the next page. */
-		flush_dcache_page(page);
 		set_page_dirty(page);
 		unlock_page(page);
 		kunmap(page);
@@ -297,13 +295,11 @@ int __ntfs_bitmap_set_bits_in_run(struct inode *vi, const s64 start_bit,
 done:
 	/* We are done.  Unmap the folio and return success. */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 6, 0)
-	flush_dcache_folio(folio);
 	folio_mark_dirty(folio);
 	folio_unlock(folio);
 	kunmap_local(kaddr);
 	folio_put(folio);
 #else
-	flush_dcache_page(page);
 	set_page_dirty(page);
 	unlock_page(page);
 	kunmap(page);

@@ -75,8 +75,6 @@ bool ntfs_mark_quotas_out_of_date(struct ntfs_volume *vol)
 	 * rescan the volume on boot and update all quota entries.
 	 */
 	qce->flags |= QUOTA_FLAG_OUT_OF_DATE;
-	/* Ensure the modified flags are written to disk. */
-	ntfs_index_entry_flush_dcache_page(ictx);
 	ntfs_index_entry_mark_dirty(ictx);
 set_done:
 	ntfs_index_ctx_put(ictx);

@@ -225,7 +225,6 @@ static int ntfs_write_mft_block(struct ntfs_inode *ni, struct folio *folio,
 
 			if (bio && (mft_ofs != prev_mft_ofs + vol->mft_record_size)) {
 flush_bio:
-				flush_dcache_folio(folio);
 				bio->bi_end_io = ntfs_bio_end_io;
 				submit_bio(bio);
 				bio = NULL;
@@ -243,7 +242,6 @@ flush_bio:
 				if (bio &&
 				   (bio_end_sector(bio) >> (vol->cluster_size_bits - 9)) !=
 				    lcn) {
-					flush_dcache_folio(folio);
 					bio->bi_end_io = ntfs_bio_end_io;
 					submit_bio(bio);
 					bio = NULL;
@@ -299,11 +297,9 @@ flush_bio:
 	}
 
 	if (bio) {
-		flush_dcache_folio(folio);
 		bio->bi_end_io = ntfs_bio_end_io;
 		submit_bio(bio);
 	}
-	flush_dcache_folio(folio);
 unm_done:
 	folio_mark_uptodate(folio);
 	kunmap_local(kaddr);
@@ -422,7 +418,6 @@ static int ntfs_write_mft_block(struct ntfs_inode *ni, struct page *page,
 
 			if (bio && (mft_ofs != prev_mft_ofs + vol->mft_record_size)) {
 flush_bio:
-				flush_dcache_page(page);
 				bio->bi_end_io = ntfs_bio_end_io;
 				submit_bio(bio);
 				bio = NULL;
@@ -439,7 +434,6 @@ flush_bio:
 				if (bio &&
 				   (bio_end_sector(bio) >> (vol->cluster_size_bits - 9)) !=
 				    lcn) {
-					flush_dcache_page(page);
 					bio->bi_end_io = ntfs_bio_end_io;
 					submit_bio(bio);
 					bio = NULL;
@@ -494,11 +488,9 @@ flush_bio:
 	}
 
 	if (bio) {
-		flush_dcache_page(page);
 		bio->bi_end_io = ntfs_bio_end_io;
 		submit_bio(bio);
 	}
-	flush_dcache_page(page);
 unm_done:
 	SetPageUptodate(page);
 	kunmap(page);

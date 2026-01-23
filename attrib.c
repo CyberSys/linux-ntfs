@@ -2083,7 +2083,6 @@ int ntfs_attr_set(struct ntfs_inode *ni, s64 ofs, s64 cnt, const u8 val)
 		memset(addr, val, attr_len);
 		kunmap_local(addr);
 
-		flush_dcache_folio(folio);
 		folio_mark_dirty(folio);
 		folio_unlock(folio);
 		folio_put(folio);
@@ -2147,7 +2146,6 @@ int ntfs_attr_set(struct ntfs_inode *ni, const s64 ofs, const s64 cnt, const u8 
 			size = end_ofs;
 		kaddr = kmap_atomic(page);
 		memset(kaddr + start_ofs, val, size - start_ofs);
-		flush_dcache_page(page);
 		kunmap_atomic(kaddr);
 		set_page_dirty(page);
 		unlock_page(page);
@@ -2170,7 +2168,6 @@ int ntfs_attr_set(struct ntfs_inode *ni, const s64 ofs, const s64 cnt, const u8 
 		}
 		kaddr = kmap_atomic(page);
 		memset(kaddr, val, PAGE_SIZE);
-		flush_dcache_page(page);
 		kunmap_atomic(kaddr);
 		/* Now that buffers are uptodate, set the page uptodate, too. */
 		SetPageUptodate(page);
@@ -2198,7 +2195,6 @@ int ntfs_attr_set(struct ntfs_inode *ni, const s64 ofs, const s64 cnt, const u8 
 		lock_page(page);
 		kaddr = kmap_atomic(page);
 		memset(kaddr, val, end_ofs);
-		flush_dcache_page(page);
 		kunmap_atomic(kaddr);
 		set_page_dirty(page);
 		unlock_page(page);
