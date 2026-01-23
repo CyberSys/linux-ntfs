@@ -897,7 +897,7 @@ long ntfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
 	switch (cmd) {
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 5, 0)
-	case NTFS_IOC_SHUTDOWN:
+	case FS_IOC_SHUTDOWN:
 		return ntfs_ioctl_shutdown(file_inode(filp)->i_sb, arg);
 #endif
 	case FS_IOC_GETFSLABEL:

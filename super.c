@@ -1971,8 +1971,8 @@ int ntfs_force_shutdown(struct super_block *sb, u32 flags)
 		return 0;
 
 	switch (flags) {
-	case NTFS_GOING_DOWN_DEFAULT:
-	case NTFS_GOING_DOWN_FULLSYNC:
+	case FS_SHUTDOWN_FLAGS_DEFAULT:
+	case FS_SHUTDOWN_FLAGS_LOGFLUSH:
 #if LINUX_VERSION_CODE > KERNEL_VERSION(6, 9, 0)
 		ret = bdev_freeze(sb->s_bdev);
 		if (ret)
@@ -1981,7 +1981,7 @@ int ntfs_force_shutdown(struct super_block *sb, u32 flags)
 #endif
 		NVolSetShutdown(vol);
 		break;
-	case NTFS_GOING_DOWN_NOSYNC:
+	case FS_SHUTDOWN_FLAGS_NOLOGFLUSH:
 		NVolSetShutdown(vol);
 		break;
 	default:
@@ -1993,7 +1993,7 @@ int ntfs_force_shutdown(struct super_block *sb, u32 flags)
 
 static void ntfs_shutdown(struct super_block *sb)
 {
-	ntfs_force_shutdown(sb, NTFS_GOING_DOWN_NOSYNC);
+	ntfs_force_shutdown(sb, FS_SHUTDOWN_FLAGS_NOLOGFLUSH);
 
 }
 #endif
