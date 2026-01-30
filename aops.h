@@ -31,5 +31,4 @@ int ntfs_dev_read(struct super_block *sb, void *buf, loff_t start, loff_t end);
 #endif
 int ntfs_dev_write(struct super_block *sb, void *buf, loff_t start,
 		   loff_t size);
-void ntfs_bio_end_io(struct bio *bio);
 #endif /* _LINUX_NTFS_AOPS_H */
