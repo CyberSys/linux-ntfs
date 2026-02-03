@@ -53,10 +53,13 @@ static int ntfs_readpage(struct file *file, struct page *page)
 	 * index inodes.
 	 */
 	if (ni->type != AT_INDEX_ALLOCATION) {
-		/* If attribute is encrypted, deny access, just like NT4. */
+		/*
+		 * EFS-encrypted files are not supported.
+		 * (decryption/encryption is not implemented yet)
+		 */
 		if (NInoEncrypted(ni)) {
 			folio_unlock(folio);
-			return -EACCES;
+			return -EOPNOTSUPP;
 		}
 		/* Compressed data streams are handled in compress.c. */
 		if (NInoNonResident(ni) && NInoCompressed(ni))
@@ -373,10 +376,13 @@ static int ntfs_writepages(struct address_space *mapping,
 	if (!NInoNonResident(ni))
 		return 0;
 
-	/* If file is encrypted, deny access, just like NT4. */
+	/*
+	 * EFS-encrypted files are not supported.
+	 * (decryption/encryption is not implemented yet)
+	 */
 	if (NInoEncrypted(ni)) {
-		ntfs_debug("Denying write access to encrypted file.");
-		return -EACCES;
+		ntfs_debug("Encrypted I/O not supported");
+		return -EOPNOTSUPP;
 	}
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 17, 0)
