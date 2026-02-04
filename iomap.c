@@ -415,23 +415,18 @@ static int __ntfs_read_iomap_begin(struct inode *inode, loff_t offset, loff_t le
 		bool for_clu_zero, bool need_unwritten)
 #endif
 {
-	struct ntfs_inode *ni = NTFS_I(inode);
-	int ret;
-
-	if (NInoNonResident(ni))
+	if (NInoNonResident(NTFS_I(inode)))
 #if LINUX_VERSION_CODE < KERNEL_VERSION(6, 17, 0)
-		ret = ntfs_read_iomap_begin_non_resident(inode, offset, length,
-				flags, iomap, for_clu_zero, need_unwritten);
+		return ntfs_read_iomap_begin_non_resident(inode, offset, length,
+							  flags, iomap, for_clu_zero,
+							  need_unwritten);
 #else
-		ret = ntfs_read_iomap_begin_non_resident(inode, offset, length,
-				flags, iomap, need_unwritten);
+		return ntfs_read_iomap_begin_non_resident(inode, offset, length,
+							  flags, iomap, need_unwritten);
 #endif
-
 	else
-		ret = ntfs_read_iomap_begin_resident(inode, offset, length,
-				flags, iomap);
-
-	return ret;
+		return ntfs_read_iomap_begin_resident(inode, offset, length,
+						      flags, iomap);
 }
 
 static int ntfs_read_iomap_end(struct inode *inode, loff_t pos, loff_t length,
