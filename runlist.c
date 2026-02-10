@@ -845,30 +845,28 @@ struct runlist_element *ntfs_mapping_pairs_decompress(const struct ntfs_volume *
 			lcn += deltaxcn;
 #ifdef DEBUG
 			/*
-			 * On NTFS 1.2-, apparently can have lcn == LCN_HOLE to
+			 * On NTFS 1.2-, apparently can have lcn == -1 to
 			 * indicate a hole. But we haven't verified ourselves
 			 * whether it is really the lcn or the deltaxcn that is
-			 * LCN_HOLE. So if either is found give us a message so we
+			 * -1. So if either is found give us a message so we
 			 * can investigate it further!
 			 */
 			if (vol->major_ver < 3) {
-				if (unlikely(deltaxcn == LCN_HOLE))
-					ntfs_error(vol->sb, "lcn delta == LCN_HOLE");
-				if (unlikely(lcn == LCN_HOLE))
-					ntfs_error(vol->sb, "lcn == LCN_HOLE");
+				if (unlikely(deltaxcn == -1))
+					ntfs_error(vol->sb, "lcn delta == -1");
+				if (unlikely(lcn == -1))
+					ntfs_error(vol->sb, "lcn == -1");
 			}
 #endif
-			/* Check lcn is not below LCN_HOLE. */
-			if (unlikely(lcn < LCN_HOLE)) {
-				ntfs_error(vol->sb, "Invalid s64 < LCN_HOLE in mapping pairs array.");
+			/* Check lcn is not below -1. */
+			if (unlikely(lcn < -1)) {
+				ntfs_error(vol->sb, "Invalid s64 < -1 in mapping pairs array.");
 				goto err_out;
 			}
 
 			/* chkdsk accepts zero-sized runs only for holes */
-			if ((lcn != LCN_HOLE) && !rl[rlpos].length) {
-				ntfs_error(vol->sb,
-					   "Invalid zero-sized data run(lcn : %lld).\n",
-					   lcn);
+			if ((lcn != -1) && !rl[rlpos].length) {
+				ntfs_error(vol->sb, "Invalid zero-sized data run.\n");
 				goto err_out;
 			}
 
