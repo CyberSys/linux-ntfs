@@ -866,7 +866,9 @@ struct runlist_element *ntfs_mapping_pairs_decompress(const struct ntfs_volume *
 
 			/* chkdsk accepts zero-sized runs only for holes */
 			if ((lcn != -1) && !rl[rlpos].length) {
-				ntfs_error(vol->sb, "Invalid zero-sized data run.\n");
+				ntfs_error(vol->sb,
+					   "Invalid zero-sized data run(lcn : %lld).\n",
+					   lcn);
 				goto err_out;
 			}
 
